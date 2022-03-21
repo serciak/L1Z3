@@ -68,8 +68,8 @@ public class TwoWayLinkedList<E> {
         stringBuilder.append("\n");
 
         if(!isEmpty()) {
-            Element current = sentinel;
-            while(current != null) {
+            Element current = sentinel.getNext();
+            while(current != sentinel) {
                 stringBuilder.append(current);
                 current = current.getNext();
                 stringBuilder.append("\n");
@@ -267,12 +267,33 @@ public class TwoWayLinkedList<E> {
         }
     }
 
-    public void insertListAtIndex() {
+    public void insertListAtIndex(int index, TwoWayLinkedList<E> list) {
+        if(size() - 1 >= index) {
+            Iterator<E> iterator = list.iterator();
+            E toAdd = iterator.next();
 
+            while(!list.isEmpty()) {
+                add(index, toAdd);
+                list.remove(toAdd);
+                toAdd = iterator.next();
+                index++;
+            }
+        }
     }
 
-    public void insertListAtElement() {
+    public void insertListAtElement(E elem, TwoWayLinkedList<E> list) {
+        if(contains(elem)) {
+            Iterator<E> iterator = list.iterator();
+            E toAdd = iterator.next();
+            int index = indexOf(elem);
 
+            while(!list.isEmpty()) {
+                add(index, toAdd);
+                list.remove(toAdd);
+                toAdd = iterator.next();
+                index++;
+            }
+        }
     }
 
     public void insertList(TwoWayLinkedList<E> list) {

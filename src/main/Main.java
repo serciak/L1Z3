@@ -26,5 +26,8 @@ public class Main {
         list2.add(s8);
 
         System.out.println(list1);
+        System.out.println(list2);
+        list1.insertListAtElement(s5, list2);
+        System.out.println(list1);
     }
 }
