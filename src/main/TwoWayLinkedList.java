@@ -115,8 +115,10 @@ public class TwoWayLinkedList<E> {
     public boolean contains(E value) {
         return indexOf(value)!=-1;
     }
+
     public E get(int index) {
-        Element elem=getElement(index); return elem.getValue();
+        Element elem=getElement(index);
+        return elem.getValue();
     }
     public E set(int index, E value) {
         Element elem=getElement(index);
@@ -177,7 +179,7 @@ public class TwoWayLinkedList<E> {
         int counter=0;
         while(elem!=sentinel){
             counter++;
-            elem=elem.getNext();
+            elem = elem.getNext();
         }
         return counter;
     }
@@ -195,115 +197,31 @@ public class TwoWayLinkedList<E> {
         }
     }
 
-    public ListIterator<E> listIterator() {
-        return new TWCListIterator();
-    }
-
-    private class TWCListIterator implements ListIterator<E> {
-        boolean wasNext = false;
-        boolean wasPrevious = false;
-
-        Element _current = sentinel;
-
-        public boolean hasNext() {
-            return _current.getNext() != sentinel;
-        }
-
-        public boolean hasPrevious() {
-            return _current != sentinel;
-        }
-
-        public int nextIndex() {
-            throw new UnsupportedOperationException();
-        }
-
-        public int previousIndex() {
-            throw new UnsupportedOperationException();
-        }
-
-        public E next() {
-            wasNext=true;
-            wasPrevious=false;
-            _current=_current.getNext();
-            return _current.getValue();
-        }
-
-        public E previous() {
-            wasNext=false;
-            wasPrevious=true;
-            E retValue=_current.getValue();
-            _current=_current.getPrev();
-            return retValue;
-        }
-
-        public void remove() {
-            if(wasNext) {
-                Element curr=_current.getPrev();
-                _current.remove();
-                _current=curr;
-                wasNext=false;
-            }
-            if(wasPrevious) {
-                _current.getNext().remove();
-                wasPrevious=false;
-            }
-        }
-
-        public void add(E data) {
-            Element newElem=new Element(data);
-            _current.insertAfter(newElem);
-            _current=_current.getNext();
-        }
-
-        public void set(E data) {
-            if(wasNext){
-                _current.setValue(data);
-                wasNext=false;
-            }
-            if(wasPrevious) {
-                _current.getNext().setValue(data);
-                wasNext=false;
-            }
-        }
-    }
-
     public void insertListAtIndex(int index, TwoWayLinkedList<E> list) {
         if(size() - 1 >= index) {
-            Iterator<E> iterator = list.iterator();
-            E toAdd = iterator.next();
+            Element temp = getElement(index);
 
-            while(!list.isEmpty()) {
-                add(index, toAdd);
-                list.remove(toAdd);
-                toAdd = iterator.next();
-                index++;
-            }
+            temp.getPrev().setNext(list.sentinel.getNext());
+            temp.setPrev(list.sentinel.getPrev());
+            list.sentinel.getPrev().setNext(temp);
         }
     }
 
     public void insertListAtElement(E elem, TwoWayLinkedList<E> list) {
         if(contains(elem)) {
-            Iterator<E> iterator = list.iterator();
-            E toAdd = iterator.next();
-            int index = indexOf(elem);
+            Element temp = getElement(indexOf(elem));
 
-            while(!list.isEmpty()) {
-                add(index, toAdd);
-                list.remove(toAdd);
-                toAdd = iterator.next();
-                index++;
-            }
+            temp.getPrev().setNext(list.sentinel.getNext());
+            temp.setPrev(list.sentinel.getPrev());
+            list.sentinel.getPrev().setNext(temp);
         }
     }
 
     public void insertList(TwoWayLinkedList<E> list) {
-        Iterator<E> iterator = list.iterator();
-        E toAdd = iterator.next();
-
-        while(!list.isEmpty()) {
-            add(toAdd);
-            list.remove(toAdd);
-            toAdd = iterator.next();
+        if(!list.isEmpty()) {
+            sentinel.getPrev().setNext(list.sentinel.getNext());
+            sentinel.setPrev(list.sentinel.getPrev());
+            list.sentinel.getPrev().setNext(sentinel);
         }
     }
 }
